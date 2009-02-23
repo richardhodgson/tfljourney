@@ -30,6 +30,47 @@ from HttpClient import HttpClient
 Now for a cup of tea and some proof of concept code...
 """
 
+class Tfl():
+    """Representation of the Tfl Oyster site
+    
+    Allows you to login and access the Journey History page.
+    """
+    
+    urls = {
+        'login':          "https://oyster.tfl.gov.uk/oyster/security_check",
+        'journeyhistory': "https://oyster.tfl.gov.uk/oyster/ppvStatement.do",
+    }
+    
+    user
+    client
+    
+    def __init(self, tflUser):
+        self.user = tflUser
+    
+    def login(self):
+        
+        values = {
+            'j_username': self.user.username,
+            'j_password': self.user.password,
+        }
+        
+        self.client = HttpClient(
+                     url=self.urls['login'],
+                     method='post',
+                     values=values
+                 )
+        
+        return self.client
+        
+    def getJourneyHistoryPage(self, dateFrom, dateTo):
+        
+        try:
+            response = self.client.request(url=self.urls['journeyhistory'])
+        except AttributeError:
+            print "Tfl.getJourneyHistoryPage needs you to run the login method first"
+            
+        return response
+
 class MainPage(webapp.RequestHandler):
   def get(self):
     
@@ -48,6 +89,7 @@ class MainPage(webapp.RequestHandler):
         'j_username': auth.username,
         'j_password': auth.password,
     }
+    
     
     form_data = urllib.urlencode(form_fields)
     
