@@ -22,7 +22,10 @@ class HttpClient():
             values = urllib.urlencode(values)
         
         # TODO make sure headers grabs from the cookie jar 
-        if headers is None: headers = {}
+        if headers:
+            headers.extend({'cookies': self.cookieJar})
+        else:
+            headers = {'cookies': self.cookieJar}
         
         response = urlfetch.fetch(
             url=url,

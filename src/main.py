@@ -14,6 +14,7 @@ import re
 import urllib
 
 from TflUser import TflUser
+from HttpClient import HttpClient
 
 """Basic premise:
 * associate login details with google account
