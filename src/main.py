@@ -71,6 +71,39 @@ class Tfl():
             
         return response
 
+class JourneyHistory:
+    
+    dataset = []
+    
+    def extractDataFromHTML(self, html):
+        "Extracts the HTML table data and converts into an object"
+        
+        strainer = SoupStrainer("table", { "class" :"journeyhistory" })
+        
+        soup = BeautifulSoup(html, parseOnlyThese=strainer)
+        
+        #Get rid of the <th> header cells
+        th = soup.find("tr")
+        th.extract()
+        
+        dataset = []
+        
+        for row in soup.findAll("tr"):
+            
+            indexes = ['date', 'time', 'location', 'action', 'fare', 'pricecap', 'balance']
+            indexes.reverse()
+            
+            keyValues = {}
+            
+            for cell in row.findAll("td"):
+                
+                keyValues[indexes.pop()] = cell.string.strip()
+            
+            dataset.append(keyValues)
+            
+        self.dataset = dataset
+        
+
 class MainPage(webapp.RequestHandler):
   def get(self):
     
